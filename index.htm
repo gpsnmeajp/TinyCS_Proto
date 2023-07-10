@@ -7,14 +7,16 @@
         <link rel="stylesheet" type="text/css" href="style.css" />
         <script src="https://unpkg.com/nostr-tools/lib/nostr.bundle.js"></script>
         <script src="https://pixijs.download/release/pixi.js"></script>
-        <script type="text/javascript" src="script.js"></script>
     </head>
     <body>
-    	上下左右キーで移動
+    	上下左右キーまたは、画面をタップで移動
         <div id="screen"></div>
-        <!-- <button type="button" id="send_button">send</button> -->
+        <textarea id="message" style="width: 700px;"></textarea>
+        <button type="button" id="send_button">send</button>
         <div id="pos"></div>
         <div id="status"></div>
         <div id="log"></div>
+        <script type="text/javascript" src="communication.js"></script>
+        <script type="text/javascript" src="script.js"></script>
     </body>
 </html>
