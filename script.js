@@ -1,6 +1,7 @@
 "use strict";
 
 // python -m http.server
+// http://localhost:8000/
 
 let relay;
 
@@ -12,7 +13,7 @@ function addLog(s) {
 }
 
 window.addEventListener('load', async (e) => {
-    relay = window.NostrTools.relayInit('wss://yabu.me')
+    relay = window.NostrTools.relayInit('wss://relay-jp.nostr.wirednet.jp')
     relay.on('connect', () => {
         setStatus(`connected to ${relay.url}`)
     })
@@ -44,12 +45,13 @@ window.addEventListener('load', async (e) => {
             pubkey: pk,
             created_at: Math.floor(Date.now() / 1000),
             tags: [],
-            content: 'hello world'
+            content: 'nostr-toolsでとりあえず投稿できるようになった。NIP-07は気楽でいいな'
         }
-        event.id = getEventHash(event)
-        event.sig = await window.nostr.signEvent(event);
-    
+        event.id = window.NostrTools.getEventHash(event)
+        event = await window.nostr.signEvent(event);
+
+        console.log("send...", event);
         relay.publish(event)
     });
-    
+
 });
