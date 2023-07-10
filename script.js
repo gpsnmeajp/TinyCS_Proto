@@ -40,7 +40,7 @@ function setMyPos(x, y, state_x, state_y) {
     })();
 }
 function addLog(s) {
-    document.getElementById('log').innerText = new Date() + " : " + s + '\n' + document.getElementById('log').innerText;
+    document.getElementById('log').innerText = new Date() + " : " + s + '\n' + document.getElementById('log').innerText.substr(0,4096);
 }
 
 document.addEventListener('keydown', (e) => {
@@ -68,12 +68,14 @@ document.addEventListener('keyup', (e) => {
 
 window.addEventListener('load', async (e) => {
     document.getElementById('screen').appendChild(app.view);
-    let sprite = new PIXI.Text('X', {
+    let sprite = new PIXI.Text('[YOU]', {
         fontFamily: 'Arial',
         fontSize: 12,
         fill: 0xFFFFFF,
         align: 'center',
     });
+    sprite.x = 400;
+    sprite.y = 400;
     sprite.anchor.set(0.5);
     app.stage.addChild(sprite);
 
