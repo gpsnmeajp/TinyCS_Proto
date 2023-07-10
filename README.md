@@ -1,5 +1,5 @@
 # TinyCS_Proto
-Tiny Cyberspace proto.
+Tiny Cyberspace prototype implementation.
 
 A very simple, small, flat, but multi-user, cyberspace implementation.
 
