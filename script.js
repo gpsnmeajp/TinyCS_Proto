@@ -104,7 +104,7 @@ window.addEventListener('load', async (e) => {
     });
     // --------------------------------------------------------------------
 
-    relay = window.NostrTools.relayInit('wss://relay-jp.nostr.wirednet.jp')
+    relay = window.NostrTools.relayInit('wss://relay')
     relay.on('connect', () => {
         setStatus(`connected to ${relay.url}`)
     })
