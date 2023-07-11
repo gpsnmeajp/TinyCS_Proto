@@ -14,11 +14,11 @@ In the future, I would like to support the cyberspace meta protocol.
 ### kind 29420 : User Position
 content
 ```
-{"x": "0", "y": "0", "z": "0", "v": ["TinyCS", "1.0.0"]}
+{"x": 0.0, "y": 0.0, "z": 0.0, "v": ["TinyCS", "1.0.0"]}
 ```
 
-Indicates the current position of the user. All integers.
-Consists of X,Z planes and a Y layer.
+Indicates the current position of the user.
+Consists of X,Y planes and a Z layer.
 ver is the protocol version.
 
 The location information is updated once every 10 seconds when there is a change position, or when the user posts something kind1.
