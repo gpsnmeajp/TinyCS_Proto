@@ -41,6 +41,7 @@ async function onMemo(event) {
 
     if (event.pubkey == mypubkey) {
         player_text_sprite.text = content;
+        player.created_at = event.created_at;
         return;
     }
 

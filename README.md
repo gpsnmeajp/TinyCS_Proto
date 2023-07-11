@@ -23,12 +23,3 @@ ver is the protocol version.
 
 The location information is updated once every 10 seconds when there is a change position, or when the user posts something kind1.
 To prevent relay load, it should not be updated at high frequency.
-
-
-必要な関数
-・自分の位置を更新する処理
-・自分の位置を10秒おきに調べて、リレーに投げる処理
-
-・他人の位置を受信する処理
-・他人のアイコンを取得する処理
-・他人の発言を取得する処理

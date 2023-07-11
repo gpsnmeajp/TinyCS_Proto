@@ -13,7 +13,8 @@ let player = {
     z: 0,
     speed_x: 0,
     speed_y: 0,
-    moved: false
+    moved: false,
+    created_at: 0
 }
 
 // 自分のスプライト
@@ -42,44 +43,6 @@ function addLog(s) {
 }
 
 // -------------------------------------------------------------------
-
-/*
-        users[event.pubkey] = {
-            sprite: new PIXI.Text(event.pubkey, {
-                fontFamily: 'Arial',
-                fontSize: 12,
-                fill: 0xFFFFFF,
-                align: 'center',
-            })
-        };
-        users[event.pubkey].sprite.anchor.set(0.5);
-        app.stage.addChild(users[event.pubkey].sprite);
-*/
-
-/*
-    let content = {
-        x: x,
-        y: y,
-        sx: player.speed_x,
-        sy: player.speed_y
-    };
-
-    (async () => {
-        const pk = await window.nostr.getPublicKey();
-        let event = {
-            kind: 29420,
-            pubkey: pk,
-            created_at: Math.floor(Date.now() / 1000),
-            tags: [],
-            content: JSON.stringify(content)
-        }
-        event.id = window.NostrTools.getEventHash(event)
-        event = await window.nostr.signEvent(event);
-
-        console.log("send...", event);
-        relay.publish(event)
-    })();
-*/
 
 // キー押されたとき
 document.addEventListener('keydown', (e) => {
@@ -219,6 +182,8 @@ window.addEventListener('load', async (e) => {
             player.x += player.speed_x * delta;
             player.y += player.speed_y * delta;
 
+            player_text_sprite.alpha = (30.0 - (Math.floor(Date.now() / 1000) - player.created_at)) / 30.0; //30秒で消える
+
             // 他スプライトを更新
             for (const o in others) {
                 let other = others[o];
@@ -231,6 +196,8 @@ window.addEventListener('load', async (e) => {
 
                 // 透明度計算
                 let a = (3600.0 - (Math.floor(Date.now() / 1000) - other.created_at)) / 3600.0; //1時間で消える
+                other.icon_sp.alpha = a;
+                other.text_sp.alpha = a;
 
                 // 移動
                 other.x = other.tx * 0.01 + other.x * 0.99;
@@ -245,10 +212,10 @@ window.addEventListener('load', async (e) => {
                     other.icon_sp.width = 64;
                     other.icon_sp.height = 64;
 
-                    a = 1.0;
+                    a = (30.0 - (Math.floor(Date.now() / 1000) - other.created_at)) / 30.0; //30秒で消える
+                    other.icon_sp.alpha = 1.0;
+                    other.text_sp.alpha = a;
                 }
-                other.text_sp.alpha = a;
-                other.icon_sp.alpha = a;
 
             }
             /*
