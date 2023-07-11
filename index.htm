@@ -9,11 +9,20 @@
         <script src="https://pixijs.download/release/pixi.js"></script>
     </head>
     <body>
-    	上下左右キーまたは、画面をタップで移動
-        <div id="screen"></div>
-        <textarea id="message" style="width: 700px;"></textarea>
-        <button type="button" id="send_button">send</button>
-        <div id="pos"></div>
+        <div id="connect_relay">
+            接続先のNIP-16対応リレーを入力し、connectをクリックして接続開始<br>
+            <input type="text" id="relay_address" value="wss://relay-jp.nostr.wirednet.jp"></input>
+            <button type="button" id="relay_connect_button">connect</button>
+        </div>
+
+        <div id="play_screen" style="display:none">
+            上下左右キーまたは、画面をタップで移動(大きなアイコンは位置情報あり、小さいアイコンは無し)<br>
+            <div id="screen"></div>
+            <textarea id="message" style="width: 700px;"></textarea>
+            <button type="button" id="send_button">send</button>
+            <div id="pos"></div>
+        </div>
+        <br>
         <div id="status"></div>
         <div id="log"></div>
         <script type="text/javascript" src="communication.js"></script>
