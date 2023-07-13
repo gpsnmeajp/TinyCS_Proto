@@ -217,6 +217,12 @@ window.addEventListener('load', async (e) => {
 
             bg_sprite.x = - player.x + 400;
             bg_sprite.y = - player.y + 400;
+            user_positions[mypubkey] = {
+                x: player.x,
+                y: player.y,
+                z: 0,
+                created_at: Math.floor(Date.now() / 1000)
+            };
 
             // 他スプライトを更新
             for (const o in others) {
@@ -291,7 +297,6 @@ window.addEventListener('load', async (e) => {
 
                 // 透明度計算
                 let a = (3600.0 - (Math.floor(Date.now() / 1000) - other.created_at)) / 3600.0; //1時間で消える
-                other.text_sp.alpha = a;
 
                 // 移動
                 other.x = other.tx * 0.01 + other.x * 0.99;
@@ -300,12 +305,11 @@ window.addEventListener('load', async (e) => {
                 // kind 29420情報がある場合
                 if (user_positions[other.target_pubkey] != undefined) {
                     // 位置情報をオーバーライド
-                    other.tx = user_positions[other.target_pubkey].x;
-                    other.ty = user_positions[other.target_pubkey].y;
-
-                    a = (30.0 - (Math.floor(Date.now() / 1000) - other.created_at)) / 30.0; //30秒で消える
-                    other.text_sp.alpha = a;
+                    other.tx = user_positions[other.target_pubkey].x + Math.random() * 30;
+                    other.ty = user_positions[other.target_pubkey].y + Math.random() * 30;
+                    a = (30.0 - (Math.floor(Date.now() / 1000) - other.created_at)) / 30.0; //30secで消える
                 }
+                other.text_sp.alpha = a;
             }
 
 

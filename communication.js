@@ -41,6 +41,13 @@ async function onMemo(event) {
     content = content.replace(/(?:https?|ftp):\/\/[\n\S]+/g, ''); //URLを削除
     content = content.replace(/(?:nostr):[\n\S]+/g, ''); //nostr:を削除
 
+    for (var t in event["tags"]) {
+        if (event["tags"][t][0] == "e") {
+            content = "[e Tag: Reply/Quote/Mention]\n" + content;
+        }
+    }
+
+
     let picture = "unknown.png"
     let contentWithName = content;
     if (user_profiles[event.pubkey].name != undefined) {
@@ -289,6 +296,13 @@ function onReaction(event) {
     let y = (parseInt(target_id.substring(12, 12 + 3), 16) - 0x800) / 2 + Math.random() * 30;
     let ox = (parseInt(event.id.substring(6, 6 + 3), 16) - 0x800) / 2; //旧座標
     let oy = (parseInt(event.id.substring(12, 12 + 3), 16) - 0x800) / 2;
+
+    // kind 29420情報がある場合
+    if (user_positions[event.pubkey] != undefined) {
+        // 位置情報をオーバーライド
+        ox = user_positions[event.pubkey].x;
+        oy = user_positions[event.pubkey].y;
+    }
 
     //tx ターゲットx (次の表示位置)
     //x 現在位置x (表示位置)
