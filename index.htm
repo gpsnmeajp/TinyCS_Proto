@@ -12,7 +12,8 @@
         <div id="connect_relay">
             接続先のNIP-16対応リレーを入力し、connectをクリックして接続開始<br>
             <input type="text" id="relay_address" value="wss://relay-jp.nostr.wirednet.jp"></input>
-            <button type="button" id="relay_connect_button">connect</button>
+            <button type="button" id="relay_connect_button">connect</button><br>
+            <input type="checkbox" id="follow only">フォロー限定にする</input>
         </div>
 
         <div id="play_screen" style="display:none">
@@ -24,6 +25,7 @@
         </div>
         <br>
         <div id="status"></div>
+        <div id="status_internal"></div>
         <div id="log"></div>
         <script type="text/javascript" src="communication.js"></script>
         <script type="text/javascript" src="script.js"></script>
