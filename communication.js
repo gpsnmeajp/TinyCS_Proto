@@ -38,8 +38,8 @@ function upRGB(code) {
 
 async function onMemo(event) {
     let content = event.content;
-    content = content.replace(/(?:https?|ftp):\/\/[\n\S]+/g, ''); //URLを削除
-    content = content.replace(/(?:nostr):[\n\S]+/g, ''); //nostr:を削除
+    content = content.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '[URL]'); //URLを削除
+    content = content.replace(/(?:nostr):[\n\S]+/g, '[nostr:]'); //nostr:を削除
 
     for (var t in event["tags"]) {
         if (event["tags"][t][0] == "e") {
@@ -222,26 +222,27 @@ function getProfile(pubkey) {
     return new Promise((resolve, reject) => {
         var timeout = setTimeout(resolve, 3000);
         // リレーに取得を依頼する
-        let psub = relay.sub([
+        let psub = relay.subscribe([
             {
                 kinds: [0],
                 limit: 1,
                 authors: [pubkey]
             }
-        ]);
-        psub.on('event', event => {
-            if (event.kind === 0) {
-                // プロフィールイベント
+        ], {
+            onevent(event) {
+                if (event.kind === 0) {
+                    // プロフィールイベント
+                    //psub.unsub();
+                    onProfile(event);
+                    resolve();
+                    clearTimeout(timeout);
+                }
+            },
+            oneose() {
                 psub.unsub();
-                onProfile(event);
                 resolve();
                 clearTimeout(timeout);
             }
-        });
-        psub.on('eose', () => {
-            psub.unsub();
-            resolve();
-            clearTimeout(timeout);
         });
     });
 }
@@ -322,32 +323,35 @@ function getContactList(pubkey) {
     return new Promise((resolve, reject) => {
         var timeout = setTimeout(resolve, 3000);
         // リレーに取得を依頼する
-        let psub = relay.sub([
+
+        let psub = relay.subscribe([
             {
                 kinds: [3],
                 limit: 1,
                 authors: [pubkey]
             }
-        ]);
-        psub.on('event', event => {
-            if (event.kind === 3) {
-                // コンタクトリストイベント
-                psub.unsub();
+        ], {
+            onevent(event) {
+                if (event.kind === 3) {
+                    // コンタクトリストイベント
+                    psub.unsub();
 
-                for (var t in event["tags"]) {
-                    if (event["tags"][t][0] == "p") {
-                        contacts.push(event["tags"][t][1]);
+                    for (var t in event["tags"]) {
+                        if (event["tags"][t][0] == "p") {
+                            contacts.push(event["tags"][t][1]);
+                        }
                     }
-                }
 
+                    resolve();
+                    clearTimeout(timeout);
+                }
+            },
+            oneose() {
+                psub.unsub();
                 resolve();
                 clearTimeout(timeout);
+
             }
-        });
-        psub.on('eose', () => {
-            psub.unsub();
-            resolve();
-            clearTimeout(timeout);
         });
     });
 }
@@ -379,51 +383,51 @@ async function connectRelay(relay_adr) {
 
     await new Promise(async (resolve, reject) => {
         // リレーに接続する
-        relay = window.NostrTools.relayInit(relay_adr);
-        relay.on('connect', async () => {
-            setStatus(`connected to ${relay.url}`)
+        relay = await window.NostrTools.Relay.connect(relay_adr);
+        setStatus(`connected to ${relay.url}`)
 
-            // 自己Profileを取得
-            await getProfile(mypubkey);
-            await getContactList(mypubkey);
-            resolve();
-        });
-        relay.on('error', () => {
-            setStatus(`failed to connect to ${relay.url}`)
-        });
-
-        await relay.connect();
+        // 自己Profileを取得
+        await getProfile(mypubkey);
+        await getContactList(mypubkey);
+        resolve();
     });
+
     // リレーから必要な情報を購読する
-    let sub = relay.sub([
+    let sub = relay.subscribe([
         {
             kinds: [1],
             since: Math.round(Date.now() / 1000) - 3600 // 1時間前まで取得
         }
-    ]);
-    sub.on('event', async event => {
-        events.push(event);
+    ], {
+        onevent(event) {
+            events.push(event);
+        },
+        oneose() { }
     });
 
-    let sub2 = relay.sub([
+    let sub2 = relay.subscribe([
         {
             kinds: [0, 29420, 30078],
             since: Math.round(Date.now() / 1000) - 3600 // 1時間前まで取得
         }
-    ]);
-    sub2.on('event', async event => {
-        events.push(event);
+    ], {
+        onevent(event) {
+            events.push(event);
+        },
+        oneose() { }
     });
 
     // リレーから必要な情報を購読する
-    let sub3 = relay.sub([
+    let sub3 = relay.subscribe([
         {
             kinds: [7],
             since: Math.round(Date.now() / 1000) - 3600 // 1時間前まで取得
         }
-    ]);
-    sub3.on('event', async event => {
-        events.push(event);
+    ], {
+        onevent(event) {
+            events.push(event);
+        },
+        oneose() { }
     });
 
     setTimeout(pump, 32);
